@@ -31,10 +31,15 @@ public class Solution {
     }
 
 
-    public static void main(String[] args) {
+ /*   public static void main(String[] args) {
         int[] array = {4, -3, 5, -2, -1, 2, 6, -2};
         Solution las = new Solution();
 
         System.out.println(las.FindGreatestSumOfSubArray(array));
+    }*/
+
+
+    public static void main(String[] args) {
+        System.out.println("dkcnkc");
     }
 }
