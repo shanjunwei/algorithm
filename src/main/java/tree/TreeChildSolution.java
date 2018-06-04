@@ -69,7 +69,7 @@ public class TreeChildSolution {
     }
 
 
-    public int TreeDepth(TreeNode root) {
+    public int TreeDepth2(TreeNode root) {
         int floor_count = 0;
         if (root == null) {
             return floor_count;
@@ -166,8 +166,28 @@ public class TreeChildSolution {
     }
 
 
-    public static void main(String[] args) {
+    // 树的深度
+    public int TreeDepth(TreeNode root) {
 
+        getTreeDepth(root, 0);
+
+        return count;
+    }
+
+    // 获取树的深度  先序遍历二叉树
+    private void getTreeDepth(TreeNode root, int depth) {
+        count = Math.max(depth,count);
+
+        if (root.left != null) {
+            getTreeDepth(root.left, depth + 1);
+        }
+
+        if (root.right != null) {
+            getTreeDepth(root.right, depth + 1);
+        }
+    }
+
+    public static void main(String[] args) {
         // 测试 序列是否为后序遍历 二叉树序列
         int[] seq = {4, 8, 6, 12, 16, 14, 10};
 
