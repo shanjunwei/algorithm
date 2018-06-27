@@ -1,7 +1,6 @@
 package tree;
 
-import java.util.LinkedList;
-import java.util.Stack;
+import java.util.*;
 
 public class TreeSolution {
 
@@ -28,17 +27,44 @@ public class TreeSolution {
     }
 
     // 递归  先序遍历 二叉树
-    public void recursiveForeachBinaryTree(TreeNode root) {
+    public void recursiveFirstForeachBinaryTree(TreeNode root) {
         if (root != null) {
             System.out.print(root.val + "-->");   // 先访问根节点
 
             if (root.left != null) {
-                recursiveForeachBinaryTree(root.left);
+                recursiveFirstForeachBinaryTree(root.left);
             }
             if (root.right != null) {
-                recursiveForeachBinaryTree(root.right);
+                recursiveFirstForeachBinaryTree(root.right);
             }
         }
+    }
+
+
+    // 递归  中序遍历 二叉树
+    public void recursiveMiddleForeachBinaryTree(TreeNode root) {
+        if(root.left != null){//使用递归遍历左孩子
+            recursiveMiddleForeachBinaryTree(root.left);
+        }
+
+        System.out.print(root.val + "-->");   // 访问根节点
+
+        if(root.right != null){//使用递归遍历右孩子
+            recursiveMiddleForeachBinaryTree(root.right);
+        }
+    }
+
+
+    // 递归  后序遍历 二叉树
+    public void recursiveAfterForeachBinaryTree(TreeNode root) {
+        if(root.left != null){//使用递归遍历左孩子
+            recursiveAfterForeachBinaryTree(root.left);
+        }
+
+        if(root.right != null){//使用递归遍历右孩子
+            recursiveAfterForeachBinaryTree(root.right);
+        }
+        System.out.print(root.val + "-->");   // 访问根节点
     }
 
 
@@ -59,26 +85,45 @@ public class TreeSolution {
             }
         }
     }
-
-
-    // 非递归 先序遍历 二叉树
-    public LinkedList<Integer> foreachBinaryTree(TreeNode root) {
-        LinkedList list = new LinkedList();
+    // 非递归 中序遍历 二叉树
+    public void nonRecursiveMiddleForeachBinaryTree(TreeNode root) {
         if (root != null) {
             Stack<TreeNode> stack = new Stack();
-            stack.push(root);
-            while (!stack.empty()) {
-                TreeNode top = stack.pop();   // 出栈顶元素
-                System.out.print("-->" + top.val);
-                list.add(top.val);
-                // 入栈右节点
-                if (top.right != null) stack.push(top.right);
-
-                // 入栈左节点
-                if (top.left != null) stack.push(top.left);
+            while (root!=null ||   !stack.empty()) {
+                if(root!=null){
+                    stack.push(root);
+                    root = root.left;
+                }else{
+                    TreeNode  node = stack.pop();
+                    System.out.println(node.val+"-->");
+                    root = node.right;
+                }
             }
         }
-        return list;
+    }
+
+
+    // 非递归 后序遍历 二叉树
+    public void nonRecursiveAfterForeachBinaryTree(TreeNode root) {
+        Stack<TreeNode> stackRes = new Stack<>();
+        Stack<TreeNode> stackTmp = new Stack<>();
+        stackTmp.push(root);
+        TreeNode curNode;
+
+        while (!stackTmp.isEmpty()) {
+            curNode = stackTmp.pop();
+            stackRes.push(curNode);
+            if (curNode.left != null) {
+                stackTmp.add(curNode.left);
+            }
+            if (curNode.right != null) {
+                stackTmp.add(curNode.right);
+            }
+        }
+
+        while (!stackRes.isEmpty()) {
+            System.out.print(stackRes.pop().val+"-->");
+        }
     }
 
 
@@ -219,21 +264,85 @@ public class TreeSolution {
     }
 
 
+    // 二叉搜索树的第k大的节点
+    TreeNode KthNode(TreeNode pRoot, int k)
+    {
+        // 中序遍历二叉树
+        if (pRoot != null) {
+            Stack<TreeNode> stack = new Stack();
+
+            stack.push(pRoot);
+            while (!stack.empty()) {
+                TreeNode top = stack.pop();   // 出栈顶元素
+                System.out.print("-->" + top.val);
+                // 入栈右节点
+                if (top.right != null) stack.push(top.right);
+
+                // 入栈左节点
+                if (top.left != null) stack.push(top.left);
+            }
+        }
+
+
+        return null;
+    }
+
+    // 二叉树按层打印
+    ArrayList<ArrayList<Integer>> Print(TreeNode pRoot) {
+        ArrayList<ArrayList<Integer>>  list = new ArrayList();
+        if(pRoot == null){
+            return list;
+        }
+
+        Map<Integer,ArrayList<Integer>>  map = new LinkedHashMap<>();
+
+        DepthForEachTree(pRoot,0,map);
+
+        for (Map.Entry<Integer,ArrayList<Integer>> entry: map.entrySet()){
+                list.add(entry.getValue());
+        }
+        return list;
+    }
+
+    // 递归层序遍历二叉树
+    public void DepthForEachTree(TreeNode root,int depth,Map<Integer,ArrayList<Integer>> map){
+        if(map.get(depth) == null){
+            ArrayList<Integer> list = new ArrayList<>();
+            list.add(root.val);
+            map.put(depth,list);
+        }else {
+            ArrayList<Integer> list = map.get(depth);
+            list.add(root.val);
+            map.put(depth,list);
+        }
+
+        if(root.left !=null) DepthForEachTree(root.left,depth+1,map);
+        if(root.right !=null) DepthForEachTree(root.right,depth+1,map);
+    }
+
+
+
+
+
+
     public static void main(String[] args) {
         TreeSolution solution = new TreeSolution();
 
-//        int[] pre = {1, 2, 4, 7, 3, 5, 6, 8};
-//
-//        int[] in = {4, 7, 2, 1, 5, 3, 8, 6};
+        int[] pre = {1, 2, 4, 7, 3, 5, 6, 8};
 
-        int[] pre = {1, 2};
+        int[] in = {4, 7, 2, 1, 5, 3, 8, 6};
 
-        int[] in = {2, 1};
+       // int[] pre = {1, 2};
+
+     //   int[] in = {2, 1};
 
         // () -> pre
 
-        TreeNode root = solution.reConstructBinaryTree(pre, in);
+      //  TreeNode root = solution.reConstructBinaryTree(pre, in);
 
-        solution.nonRecursiveForeachBinaryTree(root);
+        TreeNode root = solution.initBinaryTree();
+
+       // solution.nonRecursiveMiddleForeachBinaryTree(root);
+        solution.Print(root);
     }
 }
