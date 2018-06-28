@@ -6,110 +6,6 @@ public class TreeChildSolution {
 
     int count = 0;
 
-
-    // 判断a 树是否为 b树的字结构
-    public boolean isAChildTreeOfB(TreeNode a, TreeNode b) {
-        if (a == null) {
-            return false;
-        }
-        TreeSolution solution = new TreeSolution();
-        // 先序遍历 a
-        LinkedList<Integer> preList = solution.foreachBinaryTree(a);
-
-        // 中序遍历 a
-        LinkedList<Integer> inList = solution.foreachBinaryTree(a);
-
-
-        // 先序遍历 母树
-        TreeNode root = a;
-        int count = 0;
-        if (root != null) {
-            Stack<TreeNode> stack = new Stack();
-            stack.push(root);
-            while (!stack.empty()) {
-                TreeNode top = stack.pop();   // 出栈顶元素
-                System.out.print("-->" + top.val);
-
-                if (top.val == preList.get(count)) {
-                    count++;
-                    if (top.right != null) stack.push(top.right);      // 入栈右节点
-                    if (top.left != null) stack.push(top.left);       // 入栈左节点
-                }
-            }
-        }
-
-
-        return false;
-    }
-
-    // 层次遍历 二叉树
-    public ArrayList<Integer> PrintFromTopToBottom(TreeNode root) {
-        ArrayList<Integer> result = new ArrayList<>();
-        if (root == null) {
-            return result;
-        }
-
-        Queue<TreeNode> queue = new LinkedList();
-        queue.add(root);
-        while (!queue.isEmpty()) {
-            TreeNode head = queue.poll();
-
-            result.add(head.val);
-
-            if (head.left != null) {
-                queue.add(head.left);
-            }
-
-            if (head.right != null) {
-                queue.add(head.right);
-            }
-
-        }
-        return result;
-    }
-
-
-    public int TreeDepth2(TreeNode root) {
-        int floor_count = 0;
-        if (root == null) {
-            return floor_count;
-        }
-        // 记录一下上一层的所有节点
-        LinkedList<TreeNode> oldFloor = new LinkedList();
-        LinkedList<TreeNode> newFloor = new LinkedList();   // 当前节点
-
-        oldFloor.add(root);
-
-        while (!oldFloor.isEmpty()) {
-            //  Iterator<TreeNode> iterator = oldFloor.iterator();
-
-//            while (iterator.hasNext()) {
-//                TreeNode treeNode = iterator.next();
-//
-//                if (treeNode.right != null) {
-//                    newFloor.add(treeNode.right);
-//                }
-//
-//                if (treeNode.left != null) {
-//                    newFloor.add(treeNode.left);
-//                }
-//            }
-            oldFloor.forEach(node -> {
-                if (node.right != null) {
-                    newFloor.add(node.right);
-                }
-
-                if (node.left != null) {
-                    newFloor.add(node.left);
-                }
-            });
-
-            oldFloor = newFloor;
-            floor_count++;
-        }
-        return floor_count;
-    }
-
     // 后序遍历 二叉树
     public boolean VerifySquenceOfBST(int[] sequence) {
         if (sequence.length < 1) return false;
@@ -165,6 +61,28 @@ public class TreeChildSolution {
         return true;
     }
 
+    // 递归判断 判断一颗树是否是平衡二叉树
+    public boolean IsBalanced_Solution(TreeNode root) {
+        if(root == null) return true;
+        if(!IsBalancedOfLR(root)) return false;
+
+        if(root.left !=null) return IsBalanced_Solution(root.left);
+        if(root.right!=null) return IsBalanced_Solution(root.right);
+        else return true;
+    }
+
+    // 判断左右子树是否平衡
+    public boolean IsBalancedOfLR(TreeNode root) {
+        if(root == null) return true;
+
+        int leftDepth  =  root.left == null? 0: TreeDepth(root.left);
+        count = 0;
+        int rightDepth  =  root.right == null? 0: TreeDepth(root.right);
+
+        System.out.println("leftDepth:" + leftDepth+" rightDepth: "+rightDepth) ;
+        System.out.println((((leftDepth - rightDepth)*(leftDepth - rightDepth)) < 2));
+        return (((leftDepth - rightDepth)*(leftDepth - rightDepth)) < 2);
+    }
 
     // 树的深度
     public int TreeDepth(TreeNode root) {
@@ -187,6 +105,33 @@ public class TreeChildSolution {
         }
     }
 
+    //  二叉查找树的第k大节点   中序遍历第k 个节点
+    TreeNode KthNode(TreeNode pRoot, int k)
+    {
+        if(k ==0)  return null;
+        int count = 0;
+        if (pRoot != null) {
+            Stack<TreeNode> stack = new Stack();
+            while (pRoot!=null ||   !stack.empty()) {
+                if(pRoot!=null){
+                    stack.push(pRoot);
+                    pRoot = pRoot.left;
+                }else{
+                    TreeNode  node = stack.pop();
+                    System.out.println(node.val+"-->");
+
+                    count++;
+                    if(count == k){
+                        return node;
+                    }
+
+                    pRoot = node.right;
+                }
+            }
+        }
+        return null;
+    }
+
     public static void main(String[] args) {
         // 测试 序列是否为后序遍历 二叉树序列
         int[] seq = {4, 8, 6, 12, 16, 14, 10};
@@ -199,7 +144,7 @@ public class TreeChildSolution {
 
         //  System.out.println(solution.VerifySquenceOfBST(seq3));
 
-        System.out.println(solution.TreeDepth(ts.initBinaryTree()));
+        System.out.println(solution.IsBalanced_Solution(ts.initBinaryTree2()));
 
 
     }
